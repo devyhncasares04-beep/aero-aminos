@@ -82,8 +82,7 @@ document.addEventListener('click',async e=>{const el=e.target.closest('[data-act
  if(action==='remove'){cart=cart.filter(x=>x.id!==id);saveCart();await render();return;}
  busy=true;el.disabled=true;
  if(action==='logout'){await api('/auth/logout',{method:'POST',body:{}});await refreshSession();location.hash='/login';await render();}
- if(action==='reload')await document.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;const surface=e.target.closest('.spotlight');if(!surface)return;const rect=surface.getBoundingClientRect();surface.style.setProperty('--pointer-x',`${e.clientX-rect.left}px`);surface.style.setProperty('--pointer-y',`${e.clientY-rect.top}px`);},{passive:true});
-init();
+ if(action==='reload')await init();
  if(action==='previous'||action==='next'){page+=action==='next'?1:-1;await render();}
  if(action==='order')await openOrder(id);
  if(action==='pay-paypal'||action==='pay-zelle')await choosePayment(action==='pay-paypal'?'paypal':'zelle');
