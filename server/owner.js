@@ -1,0 +1,17 @@
+import {createInterface} from 'node:readline/promises';
+import {randomUUID} from 'node:crypto';
+import {openDatabase} from './db.js';
+import {configuration} from './config.js';
+import {emailValue,hashPassword,validatePassword} from './security.js';
+const config=configuration(),db=openDatabase(config.dbPath);
+if(db.prepare("SELECT id FROM users WHERE role='owner'").get())throw new Error('An owner already exists. Use the password recovery flow.');
+const rl=createInterface({input:process.stdin,output:process.stdout});
+const email=emailValue(await rl.question('Aero owner email: '));const name=(await rl.question('Owner display name: ')).trim();
+rl.close();if(!process.stdin.isTTY)throw new Error('Run owner setup in an interactive terminal.');
+process.stdout.write('New password (15–256 characters; hidden): ');
+process.stdin.setRawMode(true);process.stdin.resume();
+let password='';
+await new Promise((resolve,reject)=>{function read(chunk){for(const character of chunk.toString()){if(character==='\u0003'){process.stdin.off('data',read);reject(new Error('Canceled'));return;}if(character==='\r'||character==='\n'){process.stdin.off('data',read);resolve();return;}if(character==='\u007f')password=password.slice(0,-1);else password+=character;}}process.stdin.on('data',read);}).finally(()=>{process.stdin.setRawMode(false);process.stdin.pause();process.stdout.write('\n');});
+if(!email||!name||!validatePassword(password))throw new Error('Invalid details. No owner created.');
+if(config.ownerEmail&&email!==config.ownerEmail.toLowerCase())throw new Error('Email must match OWNER_EMAIL.');
+db.prepare("INSERT INTO users(id,email,name,password,role,verified,created) VALUES(?,?,?,?,'owner',1,?)").run(randomUUID(),email,name,await hashPassword(password),Date.now());password='';db.close();console.log('Owner created. No password was printed or saved in configuration.');

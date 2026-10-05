@@ -1,0 +1,3 @@
+export const catalog = [
+['Retatrutide','20 mg',5900],['Tirzepatide','20 mg',3200],['Semaglutide','20 mg',3500],['BPC-157','5 mg',1500],['CJC-1295 No DAC + Ipamorelin','5 mg + 5 mg',3500],['GHK-Cu','50 mg',2000],['KLOW','80 mg',7900],['BPC-157 + TB-500','5 mg + 5 mg',3400],['MOTS-c','10 mg',2500],['NAD+','500 mg',3000],['TB-500','5 mg',2400],['Ipamorelin','5 mg',1700],['Tesamorelin','5 mg',3400],['Sermorelin','5 mg',2600],['PT-141','10 mg',2500],['MT-II','10 mg',2000],['Epitalon','10 mg',2000],['Semax','5 mg',1400],['SS-31','10 mg',3000],['KPV','5 mg',1500],['Kisspeptin-10','5 mg',2100]
+].map(([name,strength,price],i)=>({id:`AA-${String(i+1).padStart(3,'0')}`,name,strength,price}));
