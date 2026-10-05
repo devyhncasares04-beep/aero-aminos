@@ -75,3 +75,11 @@ Unpaid PayPal stock is deliberately retained until reconciled. Automatic expiry/
 - PayPal webhooks: https://developer.paypal.com/api/webhooks/v1/
 - Render Express deployment: https://render.com/docs/deploy-node-express-app
 - Render persistent disks: https://render.com/docs/disks
+
+## October 2026 storefront update
+
+The root route now opens the black-and-gold landing page. `#/shop` remains the full searchable catalog. Product details, client care and all four policy routes are linked from the store. Country choices come only from `SHIPPING_COUNTRIES`. Account email forms explain when the mail service is not yet configured.
+
+Before opening checkout, publish client-approved plain text using `TERMS_TEXT`, `PRIVACY_TEXT`, `SHIPPING_POLICY_TEXT`, and `REFUND_POLICY_TEXT`, then set `POLICIES_APPROVED=true`. Unapproved text is not published. An approval flag by itself no longer satisfies the policy gate. All product stock quantities must be confirmed (0 is valid for sold-out items), and a verified owner account must exist. The owner setup screen explains the relevant settings without exposing their values.
+
+Still requires client setup: PayPal credentials/merchant/webhook configuration and catalog approval; verified Zelle business details if offered; SMTP sender credentials and domain authentication; owner/support addresses; shipping countries and rate; reviewed tax treatment; stock quantities; approved store policies. Do not copy another store's values. Keep `CHECKOUT_ENABLED=false` until provider and email tests pass. Subscriptions remain disabled.
