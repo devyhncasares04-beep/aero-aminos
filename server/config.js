@@ -1,7 +1,8 @@
 export function configuration(env=process.env){
  const integer=(key)=>/^\d+$/.test(env[key]||'')?Number(env[key]):null;
  const production=env.NODE_ENV==='production';
- const origin=env.APP_ORIGIN||'http://localhost:4173';
+ // Explicit custom domain wins; Render supplies the initial HTTPS service URL.
+ const origin=env.APP_ORIGIN||env.RENDER_EXTERNAL_URL||'http://localhost:4173';
  if(new URL(origin).origin!==origin)throw new Error('APP_ORIGIN must be an origin without a trailing slash');
  if(production&&!origin.startsWith('https://'))throw new Error('Production requires an HTTPS APP_ORIGIN');
  const config={production,origin,port:Number(env.PORT||3000),dbPath:env.DATABASE_PATH||'./data/aero.sqlite',checkoutEnabled:env.CHECKOUT_ENABLED==='true',policyApproved:env.POLICIES_APPROVED==='true',catalogApproved:env.CATALOG_APPROVED==='true',currency:env.CURRENCY||'',shipping:integer('SHIPPING_CENTS'),taxMode:env.TAX_MODE||'',taxRate:integer('TAX_RATE_BPS'),taxShipping:env.TAX_SHIPPING==='true',countries:(env.SHIPPING_COUNTRIES||'').split(',').filter(Boolean),ownerEmail:env.OWNER_EMAIL||'',supportEmail:env.SUPPORT_EMAIL||'',paypalMode:env.PAYPAL_MODE||'sandbox',paypalClient:env.PAYPAL_CLIENT_ID||'',paypalSecret:env.PAYPAL_CLIENT_SECRET||'',paypalMerchant:env.PAYPAL_MERCHANT_ID||'',paypalWebhook:env.PAYPAL_WEBHOOK_ID||'',paypalApproved:env.PAYPAL_CATALOG_APPROVED==='true',zelleRecipient:env.ZELLE_RECIPIENT||'',zelleName:env.ZELLE_RECIPIENT_NAME||'',zelleApproved:env.ZELLE_BUSINESS_APPROVED==='true',mailHost:env.SMTP_HOST||'',mailPort:Number(env.SMTP_PORT||587),mailUser:env.SMTP_USER||'',mailPassword:env.SMTP_PASSWORD||'',mailFrom:env.MAIL_FROM||'',mailEnabled:env.EMAIL_ENABLED==='true',trustedProxyHops:Number(env.TRUST_PROXY_HOPS||0)};
