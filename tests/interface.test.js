@@ -20,7 +20,7 @@ test('Storefront renders exact catalog, searchable products and one-time cart; g
 test('Landing, product, policy and unknown routes work; product details add correct catalog item',async()=>{
  const dom=new JSDOM(readFileSync('index.html','utf8'),{url:'https://aero.test/',runScripts:'outside-only'}),w=dom.window;w.scrollTo=()=>{};
  w.fetch=async url=>({ok:true,json:async()=>url==='/api/me'?{user:null,csrf:'test'}:{products:catalog.map(p=>({...p,stock:null})),checkoutReady:false,accountEmailReady:false,policies:{privacy:'Approved text <script>unsafe</script>'}}});
- try{w.eval(readFileSync('app.js','utf8'));await tick();assert.ok(w.document.querySelector('.landing-hero'));assert.equal(w.document.querySelectorAll('.featured-grid .product-card').length,6);assert.ok(w.document.querySelector('a[href="#/shop"]'));
+ try{w.eval(readFileSync('app.js','utf8'));await tick();assert.ok(w.document.querySelector('.landing-hero'));assert.equal(w.document.querySelectorAll('.featured-grid .product-card').length,4);assert.ok(w.document.querySelector('a[href="#/shop"]'));
  w.location.hash='/product?id=AA-010';await tick();assert.equal(w.document.querySelector('h1').textContent,'NAD+');w.document.querySelector('[data-action="add"]').click();await tick();assert.deepEqual(JSON.parse(w.localStorage.getItem('aero-cart')),[{id:'AA-010',quantity:1}]);
  w.location.hash='/privacy';await tick();assert.ok(w.document.querySelector('.policy-copy').textContent.includes('<script>unsafe</script>'));assert.equal(w.document.querySelector('.policy-copy script'),null);
  w.location.hash='/shipping';await tick();assert.ok(w.document.body.textContent.includes('published before online ordering'));
